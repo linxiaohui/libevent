@@ -1,7 +1,6 @@
 /*
   This example code shows how to write an (optionally encrypting) SSL proxy
   with Libevent's bufferevent layer.
-
   XXX It's a little ugly and should probably be cleaned up.
  */
 
@@ -210,23 +209,18 @@ accept_cb(struct evconnlistener *listener, evutil_socket_t fd,
 int
 main(int argc, char **argv)
 {
-
-#ifdef _WIN32
-	WORD wVersionRequested;
-	WSADATA wsaData;
-	int err;
-	wVersionRequested = MAKEWORD( 2, 2 );
-	err = WSAStartup( wVersionRequested, &wsaData );
-	if ( err != 0 ) {
-		fputs("WSAStartup failed! ",stderr);
-		return err;
-    }
-#endif
 	int i;
 	int socklen;
 
 	int use_ssl = 0;
 	struct evconnlistener *listener;
+
+#ifdef _WIN32
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	wVersionRequested = MAKEWORD(2, 2);
+	(void) WSAStartup(wVersionRequested, &wsaData);
+#endif
 
 	if (argc < 3)
 		syntax();
@@ -305,5 +299,6 @@ main(int argc, char **argv)
 #ifdef _WIN32
 	WSACleanup();
 #endif
+
 	return 0;
 }
